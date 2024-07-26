@@ -6,21 +6,24 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
+    [SerializeField] private float pickupDistance;
+    [SerializeField] private float speed;
+    [SerializeField] private GameObject itemPoint;
+    
     private bool interactPress;
-    private bool interactRelease;
+    private bool itemRelease;
     private Vector2 screenCenter;
-    //private GameObject hitItem;
     private GameObject currentItem;
-    public float pickupDistance;
 
     // Start is called before the first frame update
     void Start()
     {
         this.interactPress = false;
-        this.interactRelease = true;
+        this.itemRelease = true;
         this.screenCenter = new Vector2 (Screen.width/2, Screen.height/2); //prolly middle of screen :D
-        this.pickupDistance = 2.0f;
+        this.pickupDistance = 3.0f;
         this.currentItem = null;
+        this.speed = 50;
     }
 
     // Update is called once per frame
@@ -32,14 +35,17 @@ public class ItemPickup : MonoBehaviour
         {
             Debug.Log("E Pressed");
 
+            //If user currently has no held object, then check if user
+            //is pointing at an item and make it the held object
             if(this.currentItem == null)
             {
-                this.currentItem = this.GetHitObject(this.screenCenter);
-                this.interactRelease = false;
+                this.currentItem = this.GetHitObject();
+                this.itemRelease = false;
             }
+            //If user is holding an object, then release it
             else if(this.currentItem != null)
             {
-                this.interactRelease = true;
+                this.itemRelease = true;
             }
                 
         }
@@ -58,11 +64,12 @@ public class ItemPickup : MonoBehaviour
             this.interactPress = false;
     }
 
-    private GameObject GetHitObject(Vector2 screenPoint){
+    //Taken from APDEV :D
+    private GameObject GetHitObject(){
         GameObject hitObject = null;
         int layerMask = 1 << 6; //only check for objects in user layer 6
 
-        Ray ray = Camera.main.ScreenPointToRay(screenPoint);
+        Ray ray = Camera.main.ScreenPointToRay(this.screenCenter);
         if(Physics.Raycast(ray, out RaycastHit hit, this.pickupDistance, layerMask))
         {
             hitObject = hit.collider.gameObject;
@@ -74,9 +81,24 @@ public class ItemPickup : MonoBehaviour
 
     private void HoverItem()
     {
-        if (!this.interactRelease && this.currentItem != null)
+        //If there is a hitObject and user is not releasing, then move that item to ItemPoint
+        if (!this.itemRelease && this.currentItem != null)
         {
-            this.currentItem.GetComponent<Rigidbody>().AddForce(Vector3.up * 10, ForceMode.Acceleration);
+            if(this.currentItem.GetComponent<Rigidbody>() != null)
+            {
+                this.currentItem.GetComponent<Rigidbody>().useGravity = false;
+                this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.speed * Time.deltaTime);
+            }
+        }
+
+        //If user is releasing the object then enable gravity and set currentItem to null
+        else if(this.itemRelease && this.currentItem != null)
+        {
+            if (this.currentItem.GetComponent<Rigidbody>() != null)
+            {
+                this.currentItem.GetComponent<Rigidbody>().useGravity = true;
+                this.currentItem = null;
+            }
         }
     }
 
