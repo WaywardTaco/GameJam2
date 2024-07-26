@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4535153028973374}
   - component: {fileID: 3015700299760164851}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Branas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -65,7 +65,7 @@ GameObject:
   - component: {fileID: 4040954252194550}
   - component: {fileID: 33714057471811002}
   - component: {fileID: 23157489306669196}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Branas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4630804549044834}
   - component: {fileID: 33682822876436764}
   - component: {fileID: 23079546849584170}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sofa_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4469734093549736}
   - component: {fileID: 33208497747507562}
   - component: {fileID: 23260047987080452}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sofa_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 4768626724761012}
   - component: {fileID: 33381309090289254}
   - component: {fileID: 23895885590060534}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sofa_Pillow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4311338332459796}
   - component: {fileID: 1978685551351542545}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sofa_Exterior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
