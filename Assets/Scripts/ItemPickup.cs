@@ -87,16 +87,20 @@ public class ItemPickup : MonoBehaviour
             if(this.currentItem.GetComponent<Rigidbody>() != null)
             {
                 this.currentItem.GetComponent<Rigidbody>().useGravity = false;
+                this.currentItem.GetComponent<Rigidbody>().freezeRotation = true;
+                this.currentItem.GetComponent<Collider>().excludeLayers = 1 << 8; //exclude layer 8 (player) from collisions
+
                 this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.speed * Time.deltaTime);
             }
         }
 
-        //If user is releasing the object then enable gravity and set currentItem to null
+        //If user is releasing the object then enable gravity and collisions and set currentItem to null
         else if(this.itemRelease && this.currentItem != null)
         {
             if (this.currentItem.GetComponent<Rigidbody>() != null)
             {
                 this.currentItem.GetComponent<Rigidbody>().useGravity = true;
+                this.currentItem.GetComponent<Rigidbody>().freezeRotation = false;
                 this.currentItem = null;
             }
         }
