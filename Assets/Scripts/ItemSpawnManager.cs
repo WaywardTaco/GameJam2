@@ -42,27 +42,50 @@ public class ItemSpawnManager : MonoBehaviour
     private void processDebugSpawns(){
         if(spawnItem2){
             spawnItem2 = false;
-            EventBroadcaster.Instance.PostEvent(item2SpawnEventName);
+            this.spawnItem(2);
         }
         if(spawnItem3){
             spawnItem3 = false;
-            EventBroadcaster.Instance.PostEvent(item3SpawnEventName);
+            this.spawnItem(3);
         }
         if(spawnItem4){
             spawnItem4 = false;
-            EventBroadcaster.Instance.PostEvent(item4SpawnEventName);
+            this.spawnItem(4);
         }
         if(spawnItem5){
             spawnItem5 = false;
-            EventBroadcaster.Instance.PostEvent(item5SpawnEventName);
+            this.spawnItem(5);
         }
         if(spawnItem6){
             spawnItem6 = false;
-            EventBroadcaster.Instance.PostEvent(item6SpawnEventName);
+            this.spawnItem(6);
         }
         if(spawnItem7){
             spawnItem7 = false;
-            EventBroadcaster.Instance.PostEvent(item7SpawnEventName);
+            this.spawnItem(7);
+        }
+    }
+
+    public void spawnItem(int num){
+        switch(num){
+            case 2:
+                EventBroadcaster.Instance.PostEvent(item2SpawnEventName);
+                break;
+            case 3:
+                EventBroadcaster.Instance.PostEvent(item3SpawnEventName);
+                break;
+            case 4:
+                EventBroadcaster.Instance.PostEvent(item4SpawnEventName);
+                break;
+            case 5:
+                EventBroadcaster.Instance.PostEvent(item5SpawnEventName);
+                break;
+            case 6:
+                EventBroadcaster.Instance.PostEvent(item6SpawnEventName);
+                break;
+            case 7:
+                EventBroadcaster.Instance.PostEvent(item7SpawnEventName);
+                break;
         }
     }
 }
