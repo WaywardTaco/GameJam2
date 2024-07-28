@@ -40,7 +40,8 @@ public class ItemPickup : MonoBehaviour
             if(this.currentItem == null)
             {
                 this.currentItem = this.GetHitObject();
-                this.itemRelease = false;
+                if(this.currentItem != null)
+                    this.itemRelease = false;
             }
             //If user is holding an object, then release it
             else if(this.currentItem != null)
@@ -106,4 +107,13 @@ public class ItemPickup : MonoBehaviour
         }
     }
 
+    public void ReleaseItemForPedestal(){
+        if (this.currentItem.GetComponent<Rigidbody>() != null)
+        {
+            this.currentItem.GetComponent<Rigidbody>().useGravity = false;
+            this.currentItem.GetComponent<Rigidbody>().freezeRotation = false;
+            this.currentItem = null;
+            this.itemRelease = true;
+        }
+    }
 }
