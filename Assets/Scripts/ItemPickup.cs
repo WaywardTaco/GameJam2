@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemPickup : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private float pickupRotSpeed = 10.0f;
     [SerializeField] private GameObject itemPoint;
     [SerializeField] private GameObject pickupPromptRef;
+    [SerializeField] private GameObject findItemPromptRef;
     
     private bool interactPress;
     private bool itemRelease;
@@ -26,6 +28,7 @@ public class ItemPickup : MonoBehaviour
         this.pickupDistance = 3.0f;
         this.currentItem = null;
         this.pickupPromptRef.SetActive(false);
+        this.findItemPromptRef.SetActive(false);
     }
 
     // Update is called once per frame
@@ -42,7 +45,7 @@ public class ItemPickup : MonoBehaviour
             //is pointing at an item and make it the held object
             if(this.currentItem == null)
             {
-                this.currentItem = this.GetHitObject();
+                this.currentItem = this.GetHitObject(6);
                 if(this.currentItem != null)
                     this.itemRelease = false;
             }
@@ -69,17 +72,26 @@ public class ItemPickup : MonoBehaviour
     }
 
     private void CheckCanPickupItem(){
-        GameObject item = this.GetHitObject();
+        GameObject item = this.GetHitObject(6);
         if(item != null && this.itemRelease)
             this.pickupPromptRef.SetActive(true);
         else
             this.pickupPromptRef.SetActive(false);
+
+        item = this.GetHitObject(9);
+        if(item != null){
+            string progressText = item.GetComponent<ItemProgress>().GetProgressText();
+            this.findItemPromptRef.GetComponent<Text>().text = progressText;
+            this.findItemPromptRef.SetActive(true);
+        }
+        else
+            this.findItemPromptRef.SetActive(false);
     }
 
     //Taken from APDEV :D
-    private GameObject GetHitObject(){
+    private GameObject GetHitObject(int targetLayer){
         GameObject hitObject = null;
-        int layerMask = 1 << 6; //only check for objects in user layer 6
+        int layerMask = 1 << targetLayer; //only check for objects in user layer 6
 
         Ray ray = Camera.main.ScreenPointToRay(this.screenCenter);
         if(Physics.Raycast(ray, out RaycastHit hit, this.pickupDistance, layerMask))
