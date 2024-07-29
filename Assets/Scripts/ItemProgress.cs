@@ -7,6 +7,7 @@ public class ItemProgress : MonoBehaviour
 {
     [Header("Setup")]
     [SerializeField] private ItemPickup playerReference;
+    [SerializeField] private string ProgressText;
     [SerializeField] private string prevProgressEvent = "";
     [SerializeField] private string nextProgressEvent;
     [SerializeField] private float slideSpeed = 0.03f;
@@ -80,4 +81,9 @@ public class ItemProgress : MonoBehaviour
             this.StartCoroutine(this.moveItem());
         }
     }
+
+    public string GetProgressText(){
+        return this.ProgressText;
+    }
+
 }
