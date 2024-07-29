@@ -15,7 +15,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        particle = GetComponentInChildren<ParticleSystem>();
+        particle = gameObject.transform.GetChild(0).GetComponent<ParticleSystem>();
     }
 
     bool Lost = false;
@@ -48,17 +48,19 @@ public class EnemyAI : MonoBehaviour
         if (!Lost)
         {
             time = 0;
+            CancelInvoke();
             return;
         }
 
         time += Time.deltaTime;
         if (time < 5) return;
         time = 0;
-        
+
         Vector3 result;
-        if(RandomPoint(5, out result))
+        if (RandomPoint(20, out result))
         {
-            particle.transform.position = result;
+            particle.transform.position = new Vector3(result.x, result.y + 1f, result.z);
+            particle.gameObject.SetActive(true);
             Invoke("Teleport", 3);
         }
     }
@@ -80,6 +82,6 @@ public class EnemyAI : MonoBehaviour
     void Teleport()
     {
         this.transform.position = particle.transform.position;
-        particle.transform.position = this.transform.position;
+        particle.gameObject.SetActive(false);
     }
 }
