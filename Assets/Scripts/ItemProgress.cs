@@ -34,6 +34,9 @@ public class ItemProgress : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         Debug.Log("Item Detected!");
+        AudioSource itemSound = other.gameObject.GetComponent<AudioSource>();
+        if(itemSound != null)
+            itemSound.volume = 0.4f;
 
         this.DeactivatePedestal(other.gameObject);
     }

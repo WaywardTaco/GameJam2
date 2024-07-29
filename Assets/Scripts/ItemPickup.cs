@@ -101,6 +101,7 @@ public class ItemPickup : MonoBehaviour
                 this.currentItem.GetComponent<Rigidbody>().freezeRotation = true;
                 this.currentItem.GetComponent<Collider>().excludeLayers = 1 << 8; //exclude layer 8 (player) from collisions
 
+                this.currentItem.GetComponent<AudioSource>().volume = 0.5f;
                 this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.pickupSpeed);
             }
         }
@@ -112,6 +113,7 @@ public class ItemPickup : MonoBehaviour
             {
                 this.currentItem.GetComponent<Rigidbody>().useGravity = true;
                 this.currentItem.GetComponent<Rigidbody>().freezeRotation = false;
+                this.currentItem.GetComponent<AudioSource>().volume = 0.8f;
                 this.currentItem = null;
             }
         }
