@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.PlayerSettings;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -18,13 +19,19 @@ public class EnemyAI : MonoBehaviour
         particle = gameObject.transform.GetChild(0).GetComponent<ParticleSystem>();
     }
 
-    bool Lost = false;
+    bool Lost = true;
+    bool attack = false;
     float time = 0;
+
+    public LayerMask layer;
 
     private void Update()
     {
         agent.destination = player.position;
-        if (agent.remainingDistance <= distance)
+
+        RaycastHit hit;
+        Physics.Raycast(transform.position, player.position - this.transform.position, out hit, Vector3.Distance(this.transform.position, player.position), layer);
+        if (hit.collider.gameObject.name == player.gameObject.name)
         {
             agent.isStopped = false;
             if (Lost)
@@ -39,37 +46,50 @@ public class EnemyAI : MonoBehaviour
             Lost = true;
         }
 
-        if (agent.remainingDistance <= agent.stoppingDistance)
+        if (!Lost && Vector3.Distance(this.transform.position, player.position) <= agent.stoppingDistance)
         {
-            animator.SetBool("Attack", true);
+            if (!attack)
+            {
+                animator.SetTrigger("Attack");
+                attack = true;
+            }
         }
-        else animator.SetBool("Attack", false);
+        else
+        {
+            if (attack)
+            {
+                attack = false;
+            }
+        }
 
         if (!Lost)
         {
             time = 0;
-            CancelInvoke();
             return;
         }
 
         time += Time.deltaTime;
-        if (time < 5) return;
+        if (time < 6) return;
         time = 0;
 
-        Vector3 result;
-        if (RandomPoint(20, out result))
+        Vector3 pos;
+        if (RandomPoint(30, out pos))
         {
-            particle.transform.position = new Vector3(result.x, result.y + 1f, result.z);
+            particle.transform.position = new Vector3(pos.x, pos.y + 1f, pos.z);
             particle.gameObject.SetActive(true);
-            Invoke("Teleport", 3);
+            Invoke("Teleport", 4);
         }
     }
     bool RandomPoint(float range, out Vector3 pos)
     {
+        Vector3 randomPoint;
+        do
+        {
+            randomPoint = player.position + Random.insideUnitSphere * range;
+        } while (Vector3.Distance(randomPoint, player.position) > 5);
 
-        Vector3 randomPoint = this.transform.position + Random.insideUnitSphere * range;
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomPoint, out hit, 5.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPoint, out hit, 30f, NavMesh.AllAreas))
         {
             pos = hit.position;
             return true;
@@ -81,7 +101,8 @@ public class EnemyAI : MonoBehaviour
 
     void Teleport()
     {
-        this.transform.position = particle.transform.position;
+        Vector3 pos = particle.transform.position;
+        agent.Warp(new Vector3(pos.x, pos.y - 1f, pos.z));
         particle.gameObject.SetActive(false);
     }
 }
