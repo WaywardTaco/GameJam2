@@ -7,7 +7,7 @@ using UnityEngine;
 public class ItemPickup : MonoBehaviour
 {
     [SerializeField] private float pickupDistance;
-    [SerializeField] private float speed;
+    [SerializeField] private float pickupSpeed;
     [SerializeField] private GameObject itemPoint;
     
     private bool interactPress;
@@ -23,7 +23,6 @@ public class ItemPickup : MonoBehaviour
         this.screenCenter = new Vector2 (Screen.width/2, Screen.height/2); //prolly middle of screen :D
         this.pickupDistance = 3.0f;
         this.currentItem = null;
-        this.speed = 50;
     }
 
     // Update is called once per frame
@@ -91,7 +90,7 @@ public class ItemPickup : MonoBehaviour
                 this.currentItem.GetComponent<Rigidbody>().freezeRotation = true;
                 this.currentItem.GetComponent<Collider>().excludeLayers = 1 << 8; //exclude layer 8 (player) from collisions
 
-                this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.speed * Time.deltaTime);
+                this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.pickupSpeed);
             }
         }
 
