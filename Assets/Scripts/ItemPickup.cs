@@ -8,6 +8,7 @@ public class ItemPickup : MonoBehaviour
 {
     [SerializeField] private float pickupDistance;
     [SerializeField] private float pickupSpeed;
+    [SerializeField] private float pickupRotSpeed = 10.0f;
     [SerializeField] private GameObject itemPoint;
     [SerializeField] private GameObject pickupPromptRef;
     
@@ -103,6 +104,7 @@ public class ItemPickup : MonoBehaviour
 
                 this.currentItem.GetComponent<AudioSource>().volume = 0.5f;
                 this.currentItem.transform.position = Vector3.MoveTowards(this.currentItem.transform.position, this.itemPoint.transform.position, this.pickupSpeed);
+                this.currentItem.transform.rotation = Quaternion.RotateTowards(this.currentItem.transform.rotation, this.itemPoint.transform.rotation, this.pickupRotSpeed);
             }
         }
 
