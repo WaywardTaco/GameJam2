@@ -9,6 +9,7 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] private float pickupDistance;
     [SerializeField] private float pickupSpeed;
     [SerializeField] private GameObject itemPoint;
+    [SerializeField] private GameObject pickupPromptRef;
     
     private bool interactPress;
     private bool itemRelease;
@@ -23,12 +24,14 @@ public class ItemPickup : MonoBehaviour
         this.screenCenter = new Vector2 (Screen.width/2, Screen.height/2); //prolly middle of screen :D
         this.pickupDistance = 3.0f;
         this.currentItem = null;
+        this.pickupPromptRef.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
         this.CheckInteract();
+        this.CheckCanPickupItem();
 
         if(this.interactPress)
         {
@@ -62,6 +65,14 @@ public class ItemPickup : MonoBehaviour
             this.interactPress = true;
         else
             this.interactPress = false;
+    }
+
+    private void CheckCanPickupItem(){
+        GameObject item = this.GetHitObject();
+        if(item != null && this.itemRelease)
+            this.pickupPromptRef.SetActive(true);
+        else
+            this.pickupPromptRef.SetActive(false);
     }
 
     //Taken from APDEV :D
