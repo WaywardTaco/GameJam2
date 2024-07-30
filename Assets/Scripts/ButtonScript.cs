@@ -19,6 +19,9 @@ public class ButtonScript : MonoBehaviour
 
         gameScenePreload = SceneManager.LoadSceneAsync("GameScene");
         gameScenePreload.allowSceneActivation = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void LoadGame()
