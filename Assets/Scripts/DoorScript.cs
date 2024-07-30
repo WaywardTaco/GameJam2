@@ -10,13 +10,17 @@ public class DoorScript : MonoBehaviour
     private AudioSource audioSource;
 
     private void Start() {
-        if (OpenTriggerEvent != "")
+        if (OpenTriggerEvent != "" && OpenTriggerEvent != "_DisableOnLoad")
             EventBroadcaster.Instance.AddObserver(OpenTriggerEvent, OpenDoor);
         if (CloseTriggerEvent != "")
             EventBroadcaster.Instance.AddObserver(CloseTriggerEvent, CloseDoor);
 
         this.audioSource = GetComponent<AudioSource>();
-        this.audioSource.clip = this.openSound;
+        if(this.audioSource != null)
+            this.audioSource.clip = this.openSound;
+
+        if(OpenTriggerEvent == "_DisableOnLoad")
+            this.gameObject.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     private void OpenDoor(){
