@@ -27,6 +27,10 @@ public class EnemyAI : MonoBehaviour
     float time = 0;
     int action = 0;
 
+    [SerializeField] float teleportAwayInterval = 30.0f;
+    [SerializeField] float disapearTime = 5.0f;
+    [SerializeField] float teleportWarningTime = 8.0f;
+
     public LayerMask layer;
 
     private void Update()
@@ -46,7 +50,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         time += Time.deltaTime;
-        if (time < 30) return;
+        if (time < teleportAwayInterval) return;
         time = 0;
         action = 3;
     }
@@ -99,7 +103,7 @@ public class EnemyAI : MonoBehaviour
         agent.isStopped = true;
         rig.SetActive(false);
 
-        Invoke("Teleporting", 10);
+        Invoke("Teleporting", disapearTime);
         action = 4;
     }
 
@@ -111,7 +115,7 @@ public class EnemyAI : MonoBehaviour
             particle.transform.position = new Vector3(pos.x, pos.y + 1f, pos.z);
             particle.gameObject.SetActive(true);
 
-            Invoke("Teleported", 5);
+            Invoke("Teleported", teleportWarningTime);
         }
     }
 
