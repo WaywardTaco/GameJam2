@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class WinScreenEvent : MonoBehaviour
 {
-    [SerializeField] private float waitTime = 2.0f;
+    [SerializeField] private float waitTime = 5.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -14,7 +14,7 @@ public class WinScreenEvent : MonoBehaviour
     }
 
     IEnumerator WaitTransitionToTitle(){
-        yield return new WaitForSeconds(0);
+        yield return new WaitForSeconds(waitTime);
         SceneManager.LoadScene("TitleScreen");
     }
 }
