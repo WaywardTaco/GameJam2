@@ -16,6 +16,11 @@ public class GameWinLossController : MonoBehaviour
         EventBroadcaster.Instance.AddObserver("GAME_LOSE", OnLose);
     }
 
+    void OnDisable(){
+        EventBroadcaster.Instance.RemoveObserver("GAME_WIN");
+        EventBroadcaster.Instance.RemoveObserver("GAME_LOSE");
+    }
+
     void Update(){
         if (!inDebug) return;
 

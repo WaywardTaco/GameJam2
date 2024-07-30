@@ -23,6 +23,11 @@ public class DoorScript : MonoBehaviour
             this.gameObject.transform.GetChild(0).gameObject.SetActive(false);
     }
 
+    private void OnDisable(){
+        EventBroadcaster.Instance.RemoveObserver(OpenTriggerEvent);
+        EventBroadcaster.Instance.RemoveObserver(CloseTriggerEvent);
+    }
+
     private void OpenDoor(){
         this.gameObject.transform.GetChild(0).gameObject.SetActive(false);
         this.audioSource.Play();

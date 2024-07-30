@@ -33,6 +33,10 @@ public class ItemProgress : MonoBehaviour
         }
     }
 
+    private void OnDisable() {
+        EventBroadcaster.Instance.RemoveObserver(prevProgressEvent);
+    }
+
     private void OnTriggerEnter(Collider other) {
         Debug.Log("Item Detected!");
         AudioSource itemSound = other.gameObject.GetComponent<AudioSource>();

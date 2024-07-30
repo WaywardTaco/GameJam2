@@ -24,6 +24,10 @@ public class ItemSpawner : MonoBehaviour
         }
     }
 
+    private void OnDisable() {
+        EventBroadcaster.Instance.RemoveObserver(spawnEventName);
+    }
+
     private void Spawn(){
         int random = Random.Range(0, spawnLocs.Count - 1);
         Transform chosenSpawn = spawnLocs[random];
