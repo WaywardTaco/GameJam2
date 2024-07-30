@@ -5,8 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class ButtonScript : MonoBehaviour
 {
+    [SerializeField] GameObject TitleCanvas;
+    [SerializeField] GameObject TutorialCanvas;
     [SerializeField] GameObject controlPanel;
     [SerializeField] GameObject objectivePanel;
+
+    private void Start() {
+        TitleCanvas.SetActive(true);
+        controlPanel.SetActive(false);
+        objectivePanel.SetActive(false);
+        TutorialCanvas.SetActive(false);
+    }
 
     public void LoadGame()
     {
@@ -15,11 +24,15 @@ public class ButtonScript : MonoBehaviour
 
     public void LoadTutorial()
     {
-        SceneManager.LoadScene("Tutorial");
+        // SceneManager.LoadScene("Tutorial");
+        this.TitleCanvas.SetActive(false);
+        this.TutorialCanvas.SetActive(true);
     }
     public void LoadTitleScreen()
     {
-        SceneManager.LoadScene("TitleScreen");
+        // SceneManager.LoadScene("TitleScreen");
+        this.TutorialCanvas.SetActive(false);
+        this.TitleCanvas.SetActive(true);
     }
 
     public void QuitGame()
