@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
@@ -41,6 +42,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_NextStep;
         private bool m_Jumping;
         private AudioSource m_AudioSource;
+
+        [SerializeField] private float sprintCooldown;
+        [SerializeField] private float maxSprintTime;
+        private bool canSprint = true;
+        private float currentSprintTime = 0;
+        [SerializeField] private float breathInterval;
+        [SerializeField] private AudioClip[] breathSounds;    // an array of breath sounds that will be randomly selected from.
+        [SerializeField] private AudioSource breathAudioSource;
 
         // Use this for initialization
         private void Start()
@@ -131,6 +140,24 @@ namespace UnityStandardAssets.Characters.FirstPerson
             UpdateCameraPosition(speed);
 
             m_MouseLook.UpdateCursorLock();
+
+            if(!m_IsWalking){
+                currentSprintTime += Time.deltaTime;
+            } else if (currentSprintTime > 0.0f)
+                currentSprintTime -= Time.deltaTime;
+                if(currentSprintTime <= 0.0f)
+                    currentSprintTime = 0.0f;
+
+            if(currentSprintTime >= maxSprintTime && canSprint){
+                canSprint = false;
+                currentSprintTime = sprintCooldown;
+                this.StartCoroutine(PlayTiredBreath());
+            }
+    
+            if(!canSprint && currentSprintTime <= 0.0f){
+                canSprint = true;
+                currentSprintTime = 0.0f;
+            }
         }
 
 
@@ -157,6 +184,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_NextStep = m_StepCycle + m_StepInterval;
 
             PlayFootStepAudio();
+            if(!m_IsWalking)
+                PlayBreathSound();
         }
 
 
@@ -176,6 +205,38 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_FootstepSounds[0] = m_AudioSource.clip;
         }
 
+        private IEnumerator PlayTiredBreath(){
+            yield return new WaitForSeconds(breathInterval);
+
+            if(canSprint){
+                Debug.Log("Coroutine Left");
+                yield return null;
+            } else {
+                Debug.Log("Coroutine Olaying");
+
+                PlayBreathSound();
+
+                StartCoroutine(PlayTiredBreath());
+            }
+                
+
+        }
+
+        private void PlayBreathSound()
+        {
+            if(!canSprint) breathAudioSource.volume = 0.15f;
+            // else if(m_IsWalking) breathAudioSource.volume = 0.15f;
+            else breathAudioSource.volume = 0.1f;
+
+            // pick & play a random breath sound from the array,
+            // excluding sound at index 0
+            int n = Random.Range(1, breathSounds.Length);
+            breathAudioSource.clip = breathSounds[n];
+            breathAudioSource.PlayOneShot(breathAudioSource.clip);
+            // move picked sound to index 0 so it's not picked next time
+            breathSounds[n] = breathSounds[0];
+            breathSounds[0] = breathAudioSource.clip;
+        }
 
         private void UpdateCameraPosition(float speed)
         {
@@ -212,7 +273,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
-            m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
+            if(canSprint){
+                m_IsWalking = !Input.GetKey(KeyCode.LeftShift);
+            } else {
+                m_IsWalking = true;
+            }
 #endif
             // set the desired speed to be walking or running
             speed = m_IsWalking ? m_WalkSpeed : m_RunSpeed;
