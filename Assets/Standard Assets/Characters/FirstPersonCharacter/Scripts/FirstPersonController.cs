@@ -197,7 +197,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             // pick & play a random footstep sound from the array,
             // excluding sound at index 0
-            int n = Random.Range(1, m_FootstepSounds.Length);
+            int n = Random.Range(1, m_FootstepSounds.Length - 1);
             m_AudioSource.clip = m_FootstepSounds[n];
             m_AudioSource.PlayOneShot(m_AudioSource.clip);
             // move picked sound to index 0 so it's not picked next time
@@ -206,19 +206,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
         private IEnumerator PlayTiredBreath(){
-            yield return new WaitForSeconds(breathInterval);
+            Debug.Log("Coroutine entered");
 
-            if(canSprint){
+            Debug.Log("Coroutine reentered: " + this.canSprint);
+
+            if(this.canSprint){
                 Debug.Log("Coroutine Left");
                 yield return null;
             } else {
-                Debug.Log("Coroutine Olaying");
+                Debug.Log("Coroutine Playing");
 
-                PlayBreathSound();
+                this.PlayBreathSound();
 
-                StartCoroutine(PlayTiredBreath());
+                Invoke("PlayTiredBreath", breathInterval);
+                yield return null;
             }
-                
 
         }
 
@@ -230,7 +232,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             // pick & play a random breath sound from the array,
             // excluding sound at index 0
-            int n = Random.Range(1, breathSounds.Length);
+            int n = Random.Range(1, breathSounds.Length - 1);
             breathAudioSource.clip = breathSounds[n];
             breathAudioSource.PlayOneShot(breathAudioSource.clip);
             // move picked sound to index 0 so it's not picked next time
