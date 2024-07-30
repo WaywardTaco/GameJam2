@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class WinScreenEvent : MonoBehaviour
 {
-    [SerializeField] private float waitTime = 5.0f;
+    private float waitTime = 3.0f;
     AsyncOperation titlePreload;
 
     // Start is called before the first frame update

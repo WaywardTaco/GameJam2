@@ -13,6 +13,7 @@ public class EnemyAI : MonoBehaviour
     private Animator animator;
     private ParticleSystem particle;
     private GameObject rig;
+    private GameObject effects;
 
     private void Start()
     {
@@ -20,14 +21,16 @@ public class EnemyAI : MonoBehaviour
         agent.stoppingDistance = attackDis;
         animator = GetComponent<Animator>();
         particle = gameObject.transform.GetChild(0).GetComponent<ParticleSystem>();
-        rig = gameObject.transform.GetChild(1).gameObject;
+        effects = gameObject.transform.GetChild(1).gameObject;
+        rig = gameObject.transform.GetChild(2).gameObject;
     }
 
     bool attack = false;
+    bool hasSpottedPlayerThisCycle = false;
     float time = 0;
     int action = 0;
 
-    [SerializeField] float teleportAwayInterval = 30.0f;
+    [SerializeField] float teleportCycleInterval = 30.0f;
     [SerializeField] float disapearTime = 5.0f;
     [SerializeField] float teleportWarningTime = 8.0f;
 
@@ -49,10 +52,11 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        time += Time.deltaTime;
-        if (time < teleportAwayInterval) return;
-        time = 0;
-        action = 3;
+        time -= Time.deltaTime;
+        if (time <= 0){
+            time = teleportCycleInterval;
+            action = 3;
+        }
     }
 
     void Idle()
@@ -102,9 +106,11 @@ public class EnemyAI : MonoBehaviour
     {
         agent.isStopped = true;
         rig.SetActive(false);
+        effects.SetActive(false);
+        Debug.Log("Teleport Attempt");
 
-        Invoke("Teleporting", disapearTime);
         action = 4;
+        Invoke("Teleporting", disapearTime);
     }
 
     void Teleporting()
@@ -123,13 +129,15 @@ public class EnemyAI : MonoBehaviour
     {
         agent.isStopped = false;
         rig.SetActive(true);
+        effects.SetActive(true);
         particle.gameObject.SetActive(false);
 
         Vector3 pos = particle.transform.position;
         agent.Warp(new Vector3(pos.x, pos.y - 1f, pos.z));
         particle.transform.position = this.transform.position;
 
-        action = 0;
+        action = 1;
+        hasSpottedPlayerThisCycle = false;
     }
 
     bool RandomPoint(float range, out Vector3 pos)
