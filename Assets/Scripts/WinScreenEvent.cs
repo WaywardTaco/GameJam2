@@ -6,16 +6,20 @@ using UnityEngine.SceneManagement;
 public class WinScreenEvent : MonoBehaviour
 {
     [SerializeField] private float waitTime = 5.0f;
+    AsyncOperation titlePreload;
 
     // Start is called before the first frame update
     void Start()
     {
         Destroy(DoNotDestroyOnLoad.Instance.gameObject);
         this.StartCoroutine(this.WaitTransitionToTitle());
+        titlePreload = SceneManager.LoadSceneAsync("TitleScreen");
+        titlePreload.allowSceneActivation = false;
+
     }
 
     IEnumerator WaitTransitionToTitle(){
         yield return new WaitForSeconds(waitTime);
-        SceneManager.LoadScene("TitleScreen");
+        titlePreload.allowSceneActivation = true;
     }
 }
