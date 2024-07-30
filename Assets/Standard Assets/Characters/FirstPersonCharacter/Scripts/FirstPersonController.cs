@@ -47,6 +47,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private float maxSprintTime;
         private bool canSprint = true;
         private float currentSprintTime = 0;
+        [SerializeField] private float breathInterval;
+        [SerializeField] private AudioClip[] breathSounds;    // an array of breath sounds that will be randomly selected from.
+        [SerializeField] private AudioSource breathAudioSource;
 
         // Use this for initialization
         private void Start()
@@ -87,27 +90,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
 
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
-
-            
-            if(!m_IsWalking){
-                currentSprintTime += Time.deltaTime;
-            } else if (currentSprintTime > 0.0f){
-                currentSprintTime -= Time.deltaTime;
-                if(currentSprintTime <= 0.0f)
-                    currentSprintTime = 0.0f;
-            }
-
-            if(currentSprintTime >= maxSprintTime && canSprint){
-                canSprint = false;
-                currentSprintTime = sprintCooldown;
-                //this.GetComponent<>();
-            }
-    
-            if(!canSprint && currentSprintTime <= 0.0f){
-                canSprint = true;
-                currentSprintTime = 0.0f;
-            }
         }
+
 
         private void PlayLandingSound()
         {
@@ -156,6 +140,25 @@ namespace UnityStandardAssets.Characters.FirstPerson
             UpdateCameraPosition(speed);
 
             m_MouseLook.UpdateCursorLock();
+
+            if(!m_IsWalking){
+                currentSprintTime += Time.deltaTime;
+            } else if (currentSprintTime > 0.0f){
+                currentSprintTime -= Time.deltaTime;
+                if(currentSprintTime <= 0.0f)
+                    currentSprintTime = 0.0f;
+            }
+
+            if(currentSprintTime >= maxSprintTime && canSprint){
+                canSprint = false;
+                currentSprintTime = sprintCooldown;
+                this.StartCoroutine(PlayTiredBreath());
+            }
+    
+            if(!canSprint && currentSprintTime <= 0.0f){
+                canSprint = true;
+                currentSprintTime = 0.0f;
+            }
         }
 
         private void PlayJumpSound()
@@ -180,9 +183,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_NextStep = m_StepCycle + m_StepInterval;
 
             PlayFootStepAudio();
-            // if(!m_IsWalking)
-            //     PlayBreathSound();
+            if(!m_IsWalking)
+                PlayBreathSound();
         }
+
 
         private void PlayFootStepAudio()
         {
@@ -198,6 +202,41 @@ namespace UnityStandardAssets.Characters.FirstPerson
             // move picked sound to index 0 so it's not picked next time
             m_FootstepSounds[n] = m_FootstepSounds[0];
             m_FootstepSounds[0] = m_AudioSource.clip;
+        }
+
+        private IEnumerator PlayTiredBreath(){
+            Debug.Log("Coroutine entered, will wait " + this.breathInterval);
+
+            yield return new WaitForSeconds(breathInterval);
+            Debug.Log("Coroutine reentered: " + this.canSprint);
+
+            if(this.canSprint){
+                Debug.Log("Coroutine Left");
+                // yield return null;
+            } else {
+                Debug.Log("Coroutine Playing");
+
+                this.PlayBreathSound();
+
+                this.StartCoroutine(PlayTiredBreath());
+            }
+
+        }
+
+        private void PlayBreathSound()
+        {
+            if(!canSprint) breathAudioSource.volume = 0.15f;
+            // else if(m_IsWalking) breathAudioSource.volume = 0.15f;
+            else breathAudioSource.volume = 0.1f;
+
+            // pick & play a random breath sound from the array,
+            // excluding sound at index 0
+            int n = Random.Range(1, breathSounds.Length);
+            breathAudioSource.clip = breathSounds[n];
+            breathAudioSource.PlayOneShot(breathAudioSource.clip);
+            // move picked sound to index 0 so it's not picked next time
+            breathSounds[n] = breathSounds[0];
+            breathSounds[0] = breathAudioSource.clip;
         }
 
         private void UpdateCameraPosition(float speed)
