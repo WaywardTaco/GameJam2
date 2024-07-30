@@ -35,6 +35,6 @@ public class GameWinLossController : MonoBehaviour
     }
 
     private void OnLose(){
-        SceneManager.LoadScene("LoseSceen");
+        SceneManager.LoadScene("LoseScreen");
     }
 }

@@ -9,17 +9,22 @@ public class ButtonScript : MonoBehaviour
     [SerializeField] GameObject TutorialCanvas;
     [SerializeField] private AudioClip[] clickSounds;
 
+    AsyncOperation gameScenePreload;
+
     private void Start() {
         TitleCanvas.SetActive(true);
         // controlPanel.SetActive(false);
         // objectivePanel.SetActive(false);
         TutorialCanvas.SetActive(false);
+
+        gameScenePreload = SceneManager.LoadSceneAsync("GameScene");
+        gameScenePreload.allowSceneActivation = false;
     }
 
     public void LoadGame()
     {
         PlayClickSound();
-        SceneManager.LoadScene("GameScene");
+        gameScenePreload.allowSceneActivation = true;
     }
 
     public void LoadTutorial()
