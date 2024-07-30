@@ -46,7 +46,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         time += Time.deltaTime;
-        if (time < 15) return;
+        if (time < 30) return;
         time = 0;
         action = 3;
     }
@@ -96,16 +96,22 @@ public class EnemyAI : MonoBehaviour
 
     void Teleport()
     {
+        agent.isStopped = true;
+        rig.SetActive(false);
+
+        Invoke("Teleporting", 10);
+        action = 4;
+    }
+
+    void Teleporting()
+    {
         Vector3 pos;
         if (RandomPoint(40, out pos))
         {
-            agent.isStopped = true;
-            rig.SetActive(false);
             particle.transform.position = new Vector3(pos.x, pos.y + 1f, pos.z);
             particle.gameObject.SetActive(true);
 
             Invoke("Teleported", 5);
-            action = 4;
         }
     }
 
